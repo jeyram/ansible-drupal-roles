@@ -4,3 +4,4 @@
 .bundle/*
 www/*
 .DS_Store
+site.retry

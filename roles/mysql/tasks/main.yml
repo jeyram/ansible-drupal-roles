@@ -22,7 +22,7 @@
     - mariadb-client
     - python-mysqldb
     - mytop
-    - mycli
+    #- mycli
   when: ansible_os_family == 'Debian'
 
 ### }

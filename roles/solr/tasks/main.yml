@@ -26,7 +26,7 @@
 
 - name: Get drupal solr configuration (search_api & apachesolr)
   get_url: >
-    url=http://cgit.drupalcode.org/search_api_solr/plain/solr-conf/4.x/{{ item }}
+    url=http://cgit.drupalcode.org/search_api_solr/plain/solr-conf/4.x/{{ item }}?h=7.x-1.x
     dest=/opt/solr/example/solr/collection1/conf/
   with_items:
     - elevate.xml

@@ -2,7 +2,7 @@
 - name: Install Drupal and Drush with MariaDB, Nginx, and PHP-FPM
   hosts: all
   remote_user: vagrant
-  sudo: yes
+  become: yes
 
   vars:
     vagrant_ip: 192.168.88.88
@@ -10,7 +10,7 @@
     sites:
       drupal8.axai.org:
         git: "http://git.drupal.org/project/drupal.git"
-        version: 8.1.x
+        version: 8.2.x
         # use ssl
         #ssl: yes
         # use this if the site has aliases (so we can redirect)
@@ -25,13 +25,12 @@
 
   roles:
     - { role: common, tags: [common] }
-    #- { role: mailer, tags: [mailer] }
     - { role: mysql , tags: [mysql] }
-    #- { role: solr , tags: [solr] }
+    #- { role: geerlingguy.java, tags: [solr] }
+    #- { role: geerlingguy.solr, tags: [solr] }
     - { role: nginx, tags: [nginx] }
     #- { role: geerlingguy.memcached, tags: [memcached] }
-    - { role: php-fpm, tags: [php-fpm] }
-    #- { role: php7-fpm, tags: [php7-fpm] }
-    - { role: drush, tags: [drush] }
+    - { role: php7-fpm, tags: [php7-fpm] }
+    - { role: geerlingguy.composer, tags: [console] }
     - { role: drupal, tags: [drupal] }
  

@@ -3,7 +3,7 @@
   hosts: drupal-server
   connection: local
   remote_user: jackbravo
-  sudo: yes
+  become: yes
 
   vars:
     sites:
@@ -25,6 +25,5 @@
     - { role: mysql , tags: [mysql] }
     - { role: nginx, tags: [nginx] }
     - { role: php7-fpm, tags: [php7-fpm] }
-    - { role: drush, tags: [drush] }
     - { role: drupal, tags: [drupal] }
     #- { role: syslog, tags: [syslog] }

@@ -5,10 +5,14 @@
 
 - name: Add MariaDB key (Ubuntu)
   apt_key: id=0xcbcb082a1bb943db keyserver=hkp://keyserver.ubuntu.com:80
-  when: ansible_os_family == 'Debian'
+  when: ansible_distribution_release == 'trusty'
+
+- name: Add MariaDB key (Ubuntu)
+  apt_key: id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
+  when: ansible_distribution_release == 'xenial'
 
 - name: Add MariaDB 10.0 repository (Ubuntu)
-  apt_repository: repo='deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu trusty main' state=present
+  apt_repository: repo='deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu {{ansible_distribution_release}} main' state=present
   when: ansible_os_family == 'Debian'
 
 - name: Install MariaDB 10.0 (Ubuntu)
@@ -18,6 +22,7 @@
     - mariadb-client
     - python-mysqldb
     - mytop
+    - mycli
   when: ansible_os_family == 'Debian'
 
 ### }
@@ -85,8 +90,8 @@
 
 - name: Create database
   mysql_db: name={{ item.key }} state=present login_password="{{ mysql_root_password }}" login_user=root
-  with_dict: dbs
+  with_dict: "{{ dbs }}"
 
 - name: Create database user
   mysql_user: name={{ item.value.dbuser }} password="{{ item.value.dbpass }}" priv={{ item.key }}.*:ALL host={{ item.value.dbhost }} state=present append_privs=yes login_password="{{ mysql_root_password }}" login_user=root
-  with_dict: dbs
+  with_dict: "{{ dbs }}"

@@ -13,7 +13,7 @@ end
 vconfig = YAML::load_file("#{dir}/site.yml")[0]['vars']
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "geerlingguy/ubuntu1604"
+  config.vm.box = "ubuntu/bionic64"
 
   # Networking configuration.
   config.vm.network "forwarded_port", guest: 80, host: 8585,

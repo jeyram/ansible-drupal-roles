@@ -1,0 +1,20 @@
+- name: variables de entorno locale
+  locale_gen: name={{ locale }} state=present
+
+- name: establece variable a LANG={{ locale }}
+  lineinfile: dest=/etc/default/locale regexp='^LANG' line='LANG={{ locale }}'
+
+- name: establece variable a LANGUAGE={{ locale }}
+  lineinfile: dest=/etc/default/locale regexp='^LANGUAGE' line='LANGUAGE={{ locale }}'
+
+- name: establece variable a LC_ALL={{ locale }}
+  lineinfile: dest=/etc/default/locale regexp='^LC_ALL' line='LC_ALL={{ locale }}'
+
+- name: establece variable a LC_CTYPE={{ locale }}
+  lineinfile: dest=/etc/default/locale regexp='^LC_CTYPE' line='LC_CTYPE={{ locale }}'
+
+- name: recarga variables de entorno locale
+  raw: . /etc/default/locale
+
+- name: instalando programas zip / unzip
+  raw: apt-get install zip unzip

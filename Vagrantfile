@@ -10,7 +10,8 @@ dir = File.dirname(File.expand_path(__FILE__))
 if !File.exist?("#{dir}/site.yml")
   raise 'Configuration file not found! Please copy sample_yaml/example.site.yml to site.yml and try again.'
 end
-vconfig = YAML::load_file("#{dir}/site.yml")[0]['vars']
+vconfig = YAML::load_file("#{dir}/group_vars/all")
+# site.yml")[0]['vars']
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"
@@ -33,8 +34,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.memory = vconfig['vagrant_memory']
   end
 
+#  config.vm.provision "shell", inline: <<-SHELL
+#  sudo apt-get update
+#  sudo apt update
+#  sudo apt upgrade -y
+#  which python || sudo apt -y install python
+#SHELL
+
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
-    #ansible.verbose = 'vvvv'
+    ansible.verbose = 'vvvv'
   end
 end

@@ -19,6 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Networking configuration.
   config.vm.network "forwarded_port", guest: 80, host: 8585,
   nic_type: "virtio"
+
   config.vm.hostname = vconfig['vagrant_hostname']
   if vconfig['vagrant_ip'] == "0.0.0.0" && Vagrant.has_plugin?("vagrant-auto_network")
     config.vm.network :private_network, :ip => vconfig['vagrant_ip'], :auto_network => true
@@ -43,6 +44,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
-    ansible.verbose = 'vvvv'
+   # ansible.verbose = 'vvvv'
   end
 end

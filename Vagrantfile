@@ -35,12 +35,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.memory = vconfig['vagrant_memory']
   end
 
-#  config.vm.provision "shell", inline: <<-SHELL
-#  sudo apt-get update
-#  sudo apt update
-#  sudo apt upgrade -y
-#  which python || sudo apt -y install python
-#SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+  sudo apt-get update
+  sudo apt update
+  sudo apt upgrade -y
+  which python || sudo apt -y install python
+SHELL
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"

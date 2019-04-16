@@ -1,0 +1,27 @@
+- name: Agregando repositorio externo ppa:fish-shell/release-2
+  apt_repository: repo='ppa:fish-shell/release-3' state=present
+
+- name: Actualizando la cahe de apt
+  apt: update_cache=yes
+
+- name: Instalando fish shell
+  apt: name=fish state=present
+
+- name: Descargando tema oh-mi-fish
+  raw: curl -L https://github.com/oh-my-fish/oh-my-fish/raw/master/bin/install > install
+
+- name: Instalando tema oh-mi-fish para user vagrant
+  raw: fish install --noninteractive -y
+  become_user: vagrant
+
+- name: asignando fish a user vagrant
+  user:
+    name: vagrant
+    shell: /usr/bin/fish
+
+- name: Instalando tema agnoster
+  shell: omf install agnoster
+  args:
+    executable: /usr/bin/fish
+  become_user: vagrant
+

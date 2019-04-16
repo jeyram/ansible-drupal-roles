@@ -6,9 +6,9 @@
   when: ansible_os_family == 'Debian'
 
 - name: Install Common packages (Ubuntu)
-  apt: name={{ item }}
+  apt: name= state=latest
+  become: true
   with_items:
-    - fish
     - git
     - tig
     - htop
@@ -16,13 +16,12 @@
     - fail2ban
     - curl
     - vim
-    #- emacs24-nox
     - byobu
     - multitail
   when: ansible_os_family == 'Debian'
 
 - name: Install Common packages (CentOS)
-  yum: name={{ item }}
+  yum: name= state=latest
   with_items:
     - epel-release
     - git

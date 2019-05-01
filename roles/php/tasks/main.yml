@@ -1,0 +1,22 @@
+- name: Agregando repositorio externo ppa:ondrej/php
+  apt_repository: repo='ppa:ondrej/php' state=present
+
+- name: Actualizando la cahe de apt
+  apt: update_cache=yes
+
+- name: Instalando módulos/características en php
+  apt:
+    name:
+    - php{{ php.version }}-json
+    - php{{ php.version }}-xml
+    - php{{ php.version }}-mbstring
+    - php{{ php.version }}-gd
+    - php{{ php.version }}-curl
+    - php{{ php.version }}-mysql
+    - php{{ php.version }}-cli
+    - php{{ php.version }}-common
+    - php{{ php.version }}-intl
+    - php{{ php.version }}-zip
+    - php{{ php.version }}-opcache
+    - php{{ php.version }}-bcmath
+    state: present

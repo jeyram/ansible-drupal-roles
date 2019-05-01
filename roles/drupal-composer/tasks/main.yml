@@ -1,0 +1,6 @@
+- name: Ejecutando composer install
+  command: composer install
+  args:
+    chdir: /var/www/{{ configs.projecto }}
+  become: yes
+  become_user: vagrant

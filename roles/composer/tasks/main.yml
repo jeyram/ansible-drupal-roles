@@ -1,0 +1,8 @@
+- name: Copiando instalar_composer.sh a la maquina virtual
+  copy: src=instalar_composer.sh dest=/tmp/instalar_composer.sh
+
+- name: Ejectutar instalar_composer.sh
+  raw: bash /tmp/instalar_composer.sh
+
+- name: moviendo composer.phar a /usr/local/bin
+  raw: mv composer.phar /usr/local/bin/composer

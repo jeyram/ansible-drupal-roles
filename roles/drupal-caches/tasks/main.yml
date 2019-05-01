@@ -1,0 +1,6 @@
+- name: Limpiando caches de Drupal
+  command: drupal cr all
+  args:
+    chdir: /var/www/{{ configs.projecto }}
+  become: yes
+  become_user: vagrant

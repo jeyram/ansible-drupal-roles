@@ -1,0 +1,12 @@
+- name: Verificando que no exista el archivo settings.php
+  file: path=/var/www/{{ configs.projecto }}/web/sites/default/settings.php state=absent
+
+- name: Pasando la configuración la configuración settings.php
+  template: src=settings-template.j2 dest=/var/www/{{ configs.projecto }}/web/sites/default/settings.php
+
+- name: Instalando configiraciones de Drupal
+  command: drupal config:import
+  args:
+    chdir: /var/www/{{ configs.projecto }}
+  become: yes
+  become_user: vagrant

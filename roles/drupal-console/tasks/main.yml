@@ -1,0 +1,8 @@
+- name: Descargando drupal console
+  raw: curl https://drupalconsole.com/installer -L -o drupal.phar
+
+- name: moviendo drupal.phar a /usr/local/bin
+  raw: mv drupal.phar /usr/local/bin/drupal
+
+- name: asignando atributos para ejecución
+  raw: chmod +x /usr/local/bin/drupal

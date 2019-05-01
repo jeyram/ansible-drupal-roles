@@ -1,0 +1,9 @@
+- name: Ejecutando npm install
+  command: npm install
+  args:
+    chdir: /var/www/{{ configs.projecto }}/web/themes/particle
+
+- name: Ejecutando npm run build:drupal
+  command: npm run build:drupal
+  args:
+    chdir: /var/www/{{ configs.projecto }}/web/themes/particle

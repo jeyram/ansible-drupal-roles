@@ -1,0 +1,8 @@
+- name: Instalando Drush Launcher
+  raw: wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar
+
+- name: moviendo drush.phar a /usr/local/bin
+  raw: mv drush.phar /usr/local/bin/drush
+
+- name: asignando atributos para ejecución
+  raw: chmod +x /usr/local/bin/drush

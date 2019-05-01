@@ -1,0 +1,2 @@
+- name: Instalando Java openjdk-{{ java.version }}-jdk
+  apt: name=openjdk-{{ java.version }}-jdk state=present

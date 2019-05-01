@@ -1,0 +1,30 @@
+- name: Creando usario '{{ db.user }}' con credenciales totales
+  mysql_user:
+    name: '{{ db.user }}'
+    password: '{{ db.pswd }}'
+    host: '%'
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Creando base de datos
+  mysql_db:
+    name: '{{ db.database }}'
+    state: present
+
+- name: Alterando la contraseña en modo "Legacy"
+  raw: mysql -uroot -e "ALTER USER '{{ db.user }}'@'%' IDENTIFIED WITH mysql_native_password BY '{{ db.pswd }}';"
+
+- name: Reiniciando los privilegios
+  raw: mysql -uroot -e "FLUSH PRIVILEGES;"
+
+- name: Extrayendo base de datos del formato .zip a .sql
+  unarchive:
+    src: /var/www/{{ configs.projecto }}/_database/{{ configs.projecto }}.sql.zip
+    dest: /var/www/{{ configs.projecto }}/_database/
+    remote_src: yes
+
+- name: Importando base de datos
+  mysql_db:
+    name: '{{ db.database }}'
+    state: import
+    target: /var/www/{{ configs.projecto }}/_database/{{ configs.projecto }}.sql

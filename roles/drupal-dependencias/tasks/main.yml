@@ -1,0 +1,7 @@
+- name: Dependencia de Commerce-Pos "quagga"
+  raw: wget -P /var/www/{{ configs.projecto }}/web/libraries/quagga https://raw.githubusercontent.com/serratus/quaggaJS/master/dist/quagga.min.js
+  become_user: vagrant
+
+- name: Dependencia de Commerce-Pos "adapter"
+  raw: wget -P /var/www/{{ configs.projecto }}/web/libraries/adapter https://webrtc.github.io/adapter/adapter-latest.js
+  become_user: vagrant

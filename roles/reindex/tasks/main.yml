@@ -1,0 +1,9 @@
+- name: Forzando reindexado de drupal/solr
+  command: drush search-api-reindex -q --root=/var/www/{{ configs.projecto }}
+  args:
+    chdir: /var/www/{{ configs.projecto }}
+
+- name: Indexando de drupal/solr
+  command: drush search-api-index -q --root=/var/www/{{ configs.projecto }}
+  args:
+    chdir: /var/www/{{ configs.projecto }}

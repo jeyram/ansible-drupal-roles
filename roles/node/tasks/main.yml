@@ -1,0 +1,8 @@
+- name: Descargando ppa node versión {{ node.version }}.x
+  raw: curl -sL https://deb.nodesource.com/setup_{{ node.version }}.x -o nodesource_setup.sh
+
+- name: Instalando ppa node versión {{ node.version }}.x
+  raw: bash nodesource_setup.sh
+
+- name: Instalando node versión {{ node.version }}.x
+  apt: name=nodejs state=present

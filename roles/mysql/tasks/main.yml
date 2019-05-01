@@ -1,97 +1,14 @@
----
-- group_by: key={{ ansible_os_family }}
+- name: Agregando el apt de mysql 8
+  apt: deb=http://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
 
-### Install MySQL Ubuntu {
+- name: Actualizando la cahe de apt
+  apt: update_cache=yes
 
-- name: Add MariaDB key (Ubuntu)
-  apt_key: id=0xcbcb082a1bb943db keyserver=hkp://keyserver.ubuntu.com:80
-  when: ansible_distribution_release == 'trusty'
+- name: Instalando mysql-server
+  apt: name=mysql-server state=present
 
-- name: Add MariaDB key (Ubuntu)
-  apt_key: id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
-  when: ansible_distribution_release == 'xenial'
+- name: Instalando mysql-client
+  apt: name=mysql-client state=present
 
-- name: Add MariaDB 10.0 repository (Ubuntu)
-  apt_repository: repo='deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu {{ansible_distribution_release}} main' state=present
-  when: ansible_os_family == 'Debian'
-
-- name: Install MariaDB 10.0 (Ubuntu)
-  apt: name={{ item }}
-  with_items:
-    - mariadb-server
-    - mariadb-client
-    - python-mysqldb
-    - mytop
-    #- mycli
-  when: ansible_os_family == 'Debian'
-
-### }
-
-### Install MySQL CentOS {
-
-- name: Add MariaDB 10.0 repository (CentOS)
-  template: src=MariaDB.repo dest=/etc/yum.repos.d/MariaDB.repo
-  when: ansible_os_family == 'RedHat'
-
-- name: Add MariaDB key (CentOS)
-  rpm_key: key=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-  when: ansible_os_family == 'RedHat'
-
-- name: Install MariaDB (CentOS)
-  yum: name={{ item }}
-  with_items:
-    - MariaDB-server
-    - MySQL-python
-    - mytop
-    - innotop
-  when: ansible_os_family == 'RedHat'
-
-### }
-
-- name: Create Mysql configuration file
-  template: src=my.cnf.j2 dest={{ my_cnf_dest }}
-  notify: 
-  - restart mysql
-
-- name: Start Mysql Service
-  service: name=mysql state=started enabled=true
-
-- name: Check if .my.cnf file already exists.
-  stat: path=/root/.my.cnf
-  register: mycnf_file
-
-# 'localhost' needs to be the last item for idempotency, see
-# http://docs.ansible.com/mysql_user_module.html
-- name: Update MySQL root password for all root accounts.
-  mysql_user: name=root host={{ item }} password={{ mysql_root_password }}
-  with_items:
-    - 127.0.0.1
-    - ::1
-    - localhost
-  when: mycnf_file.stat.exists == false
-
-# Has to be after the root password assignment, for idempotency.
-- name: Copy .my.cnf file with root password credentials.
-  template: src=root-my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=600
-
-- name: Delete anonymous MySQL user for localhost.
-  mysql_user: >
-    name=""
-    state=absent
-    login_user=root
-    login_password="{{ mysql_root_password }}"
-
-- name: Remove the MySQL test database.
-  mysql_db: >
-    name="test"
-    state=absent
-    login_user=root
-    login_password="{{ mysql_root_password }}"
-
-- name: Create database
-  mysql_db: name={{ item.key }} state=present login_password="{{ mysql_root_password }}" login_user=root
-  with_dict: "{{ dbs }}"
-
-- name: Create database user
-  mysql_user: name={{ item.value.dbuser }} password="{{ item.value.dbpass }}" priv={{ item.key }}.*:ALL host={{ item.value.dbhost }} state=present append_privs=yes login_password="{{ mysql_root_password }}" login_user=root
-  with_dict: "{{ dbs }}"
+- name: Instalando MySQL-python
+  apt: name=python-mysqldb state=present

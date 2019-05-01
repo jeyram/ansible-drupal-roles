@@ -1,56 +1,25 @@
----
-- group_by: key={{ ansible_os_family }}
+- name: Instalando php{{ php.version }}-fpm
+  apt: name=php{{ php.version }}-fpm state=present
 
-- name: Install php-fpm and deps (Ubuntu)
-  apt: name={{ item }}
-  with_items:
-    - php5-fpm
-    - php5-cli
-    - php5-apcu
-    - php5-gd
-    - php5-mysqlnd
-    - php5-mcrypt
-    - php5-memcache
-    - php5-curl
-    - mariadb-client
-  when: ansible_os_family == 'Debian'
+- name: Modificaciones en php date.timezone = America/Mexico_City;
+  lineinfile: dest=/etc/php/{{ php.version }}/fpm/php.ini regexp='^;date.timezone =' line='date.timezone = America/Mexico_City;'
 
-- name: Enable mcrypt (Ubuntu)
-  command: "php5enmod mcrypt"
-  notify: restart php-fpm
-  when: ansible_os_family == 'Debian'
+- name: Modificaciones en php para Drupal cgi.fix_pathinfo = 0;
+  lineinfile: dest=/etc/php/{{ php.version }}/fpm/php.ini regexp='^;cgi.fix_pathinfo' line='cgi.fix_pathinfo = 0;'
 
-- name: Enable remi CentOS key for newer PHP
-  rpm_key: key=http://rpms.famillecollet.com/RPM-GPG-KEY-remi
-  when: ansible_os_family == 'RedHat'
+- name: Modificaciones en php para Drupal upload_max_filesize = {{ php.max_up_size }};
+  lineinfile: dest=/etc/php/{{ php.version }}/fpm/php.ini regexp='^upload_max_filesize' line='upload_max_filesize = {{ php.max_up_size }};'
 
-- name: Enable remi CentOS repo for newer PHP
-  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-  when: ansible_os_family == 'RedHat'
+- name: Modificaciones en php para Drupal post_max_size = {{ php.max_post_size }};
+  lineinfile: dest=/etc/php/{{ php.version }}/fpm/php.ini regexp='^upload_max_filesize' line='upload_max_filesize = {{ php.max_post_size }};'
 
-- name: Install php-fpm and deps (Centos)
-  yum: name={{ item }} enablerepo=remi,remi-php55
-  with_items:
-    - php-fpm
-    - php-cli
-    - php-opcache
-    - php-gd
-    - php-mysqlnd
-    - php-pecl-apcu
-    - php-pecl-memcache
-    - php-mbstring
-    - php-mcrypt
-    - php-xml
-    - mysql-client
-  when: ansible_os_family == 'RedHat'
+- name: Modificaciones en php para Drupal max_execution_time = {{ php.max_execution_time }};
+  lineinfile: dest=/etc/php/{{ php.version }}/fpm/php.ini regexp='^max_execution_time' line='max_execution_time = {{ php.max_execution_time }};'
 
-- name: Copy php.ini
-  template: src=php.ini dest={{ php_ini_dest }}
-  notify: restart php-fpm
+- name: Eliminando la configuración predeterminada
+  file: path=/etc/php/{{ php.version }}/fpm/pool.d/www.conf state=absent
 
-- name: Copy www.conf
-  template: src=www.conf dest={{ php_fpm_conf }}
-  notify: restart php-fpm
-
-- name: Make sure php-fpm is running
-  service: state=started name={{ php_fpm_daemon }} enabled=yes
+- name: reescribiendo la configuración fpm pools
+  template: src=pool-template.j2 dest=/etc/php/{{ php.version }}/fpm/pool.d/{{ item.name }}.conf
+  with_items: '{{ fpm }}'
+  notify: reiniciando php-fpm

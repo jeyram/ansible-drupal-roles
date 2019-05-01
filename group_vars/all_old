@@ -1,0 +1,93 @@
+##################################
+# MySQL
+##################################
+mysql_root_password: ""
+mysql_bind_address: 127.0.0.1
+mysql_max_connections: 151
+query_cache_limit: 1M
+query_cache_size: 64M
+long_query_time: 2
+# myisam
+key_buffer_size: 64M
+myisam_sort_buffer_size: 128M
+# innodb
+# http://ronaldbradford.com/blog/more-on-understanding-sort_buffer_size-2010-05-10/
+sort_buffer_size: 256K
+# For db only servers 70-80% of mem. For shared, maybe 20%
+# For a DB only server
+#innodb_buffer_pool_size: 1536M
+# For a 2 GB VPS single server (php+nginx+mysql)
+innodb_buffer_pool_size: 256M
+# do not flush neighbour pages on SSD there's no seek penalty. Turn on only on HDD
+innodb_flush_neighbors: 0
+# ATTENTION!!! If you want to change this value you have to take special steps
+# If the customer already has InnoDB tables and wants to change the 
+# size of the InnoDB tablespace and InnoDB logs, then:
+# 1. Run a full backup with mysqldump
+# 2. Stop MySQL
+# 3. Move current ibdata and ib_logfiles out of /var/lib/mysql
+# 4. Uncomment the below innodb_data_file_path and innodb_log_file_size
+# 5. Start MySQL (it will recreate new InnoDB files)
+# 6. Restore data from backup
+innodb_log_file_size: 50M
+
+##################################
+# nginx
+##################################
+# should be also the size of upload_max_filesize and post_max_size php.ini vars
+client_max_body_size: 64M
+# Default is 8. When responses are big you could set to 64
+# Guide to set number: https://gist.github.com/magnetikonline/11312172
+fastcgi_buffers: 8
+
+##################################
+# PHP
+##################################
+# normal value for a drupal (even panopoly) site
+php_memory_limit: 256M
+# used to be apc_shm_size, MB is implied
+opcache_memory_consumption: 128
+# apc_shm_size is used by apcu (apc module needs to be enabled)
+apc_shm_size: 128M
+# default date
+date_timezone: "America/Mexico_City"
+# default is 1000
+max_input_vars: 1000
+
+##################################
+# PHP-FPM config
+##################################
+# recommended for 16GB VPS (not tested yet)
+#pm_max_children: 300
+#pm_start_servers: 100
+#pm_min_spare_servers: 50
+#pm_max_spare_servers: 100
+#pm_max_requests: 1000
+
+# recommended for 2 GB VPS
+# If we receive more than {{ max_children }} logged in users with long requests,
+# we will get 502 bad gateway errors.
+pm_max_children: 50
+pm_start_servers: 20
+pm_min_spare_servers: 20
+pm_max_spare_servers: 20
+pm_max_requests: 500
+pm_status_path: php-fpm-status.php
+
+##################################
+# Solr
+##################################
+# For small server 128m for bigger?
+solr_memory: 128m
+
+##################################
+# Varnish
+##################################
+varnish_version: "4.0"
+varnish_default_backend_host: "127.0.0.1"
+varnish_default_backend_port: "8080"
+varnish_listen_port: "80"
+varnish_secret: "14bac2e6-1e34-4770-8078-974373b76c90"
+varnish_admin_listen_host: "127.0.0.1"
+varnish_admin_listen_port: "6082"
+varnish_storage: "file,/var/lib/varnish/varnish_storage.bin,256M"
